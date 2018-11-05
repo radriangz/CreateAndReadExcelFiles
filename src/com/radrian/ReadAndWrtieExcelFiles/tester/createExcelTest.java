@@ -15,8 +15,8 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 public class createExcelTest {
 
 	public static void main(String[] args) {
-		String fileName = "ExampleFile";
-		String fileRoute = "C:\\Users\\RAdrian\\Documents\\ExcelTesterFilies\\" + fileName;
+		String fileName = "ExampleFile.xlsx";
+		String fileRoute = "C:\\Users\\RAdrian\\Documents\\ExcelTesterFiles\\" + fileName;
 		String sheet = "Sheet01";
 
 		XSSFWorkbook book = new XSSFWorkbook();
