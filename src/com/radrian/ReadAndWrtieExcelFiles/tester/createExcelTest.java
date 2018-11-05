@@ -43,7 +43,7 @@ public class createExcelTest {
 		for (int i = 0; i <= document.length; i++) {
 			// create the rows
 			XSSFRow row = sheet01.createRow(i);
-			for (int j = 0; i < header.length; i++) {
+			for (int j = 0; j < header.length; j++) {
 				if (i == 0) { // this is only for the header
 					XSSFCell cell = row.createCell(j); // creates the cells for the header, with the position
 					cell.setCellStyle(style);// adds the style created before
