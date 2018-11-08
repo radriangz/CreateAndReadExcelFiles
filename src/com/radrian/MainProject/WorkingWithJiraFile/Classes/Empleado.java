@@ -17,11 +17,15 @@ public class Empleado {
 	public Empleado(String name) {
 		this.name = name;
 	}
+	
+	public Empleado(String name, int originalEstimate) {
+		this(name);
+		this.originalEstimate = originalEstimate;
+	}
 
-	public Empleado(String name, int originalSeconds, int remainingSeconds) {
-		this.name = name;
-		this.originalEstimate = originalSeconds;
-		this.remainingEstimate = remainingSeconds;
+	public Empleado(String name, int originalEstimate, int remainingEstimate) {
+		this(name, originalEstimate);
+		this.remainingEstimate = remainingEstimate;
 	}
 
 	public String getName() {
