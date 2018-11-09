@@ -15,69 +15,71 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class MainClass {
-	private static final String ORIGINAL_ESTIMATE = "Estimación original";
-	private static final String RESPONSIBLE = "Responsable";
-	private static final byte HEADER_ROW = 0;
-	private static HashMap<String, Double> empleadosHashMap = new HashMap<String, Double>();
-	private static String empleadoStringName = "";
-	private static double empleadoOriginalEstimate = 0.0f;
+	private final String ORIGINAL_ESTIMATE = "Estimación original";
+	private final String RESPONSIBLE = "Responsable";
+	private final byte HEADER_ROW = 0;
+
+	private String fileRoute = "";
+	private Iterator<Row> rowIterator = null;
+	private HashMap<String, Double> empleadosHashMap = new HashMap<String, Double>();
+	private String empleadoStringName = "";
+	private double empleadoOriginalEstimate = 0.0f;
+	private byte columnOriginalEstimate = -1;
+	private byte columnResponsible = -1;
 
 	public static void main(String[] args) {
-		String fileName = "JIRA_resumen.xlsx";
-		String fileRoute = "C:\\Users\\RAdrian\\Documents\\ExcelTesterFiles\\" + fileName;
-		byte columnOriginalEstimate = -1;
-		byte columnResponsible = -1;
-		// String fileSheet = "Hoja1";
+		MainClass mc = new MainClass();
+		mc.execute();
+	}
 
+	private void setEmpleadoStringName(String stringCellValue) {
+		this.empleadoStringName = stringCellValue;
+	}
+
+	private void setEmpleadoOriginalEstimate(Double cellNumericCellValue) {
+		this.empleadoOriginalEstimate = Double.valueOf(cellNumericCellValue);
+	}
+
+	private double convertToDays(double doublValueToDays) {
+		return (doublValueToDays / 3600 / 8);
+	}
+	
+	private double convertToHours(double dobleValueToHours) {
+		return (dobleValueToHours/3600);
+	}
+	
+	private void printHashMapValues() {
+		for (HashMap.Entry<String, Double> entry : empleadosHashMap.entrySet()) {
+			System.out.println("Días estimados del empleado " + entry.getKey() + " = \n"
+					+ convertToDays(entry.getValue()) + " días. (" + convertToHours(entry.getValue()) + " horas).");
+		}
+	}
+
+	/**
+	 * This method requests the file route and file name and returns the resultant
+	 * string
+	 */
+	private void fetchFile() {
+		// here goes a method that requests the files to the user, using JPane.
+		String fileName = "JIRA_resumen.xlsx";
+		String fileRoute = "C:\\Users\\RAdrian\\Documents\\ExcelTesterFiles\\";
+		this.fileRoute = fileRoute + fileName;
+	}
+
+	/**
+	 * after the file route being set, it makes the instances necessary to set the
+	 * rowIterator.
+	 */
+	private void setIteratorRow() {
+		/*
+		 * This method is only interested in obtaining the rowIterator which, in this
+		 * case, is the only object needed to work on the table, do I need to make more
+		 * methods for this method?
+		 */
 		try (FileInputStream file = new FileInputStream(new File(fileRoute))) {
 			XSSFWorkbook workbook = new XSSFWorkbook(file);
 			XSSFSheet sheet = workbook.getSheetAt(0);
-			Iterator<Row> rowIterator = sheet.iterator();
-
-			while (rowIterator.hasNext()) {
-				Row row = rowIterator.next();
-				Iterator<Cell> cellIterator = row.cellIterator();
-
-				while (cellIterator.hasNext()) {
-					Cell cell = cellIterator.next();
-
-					if (HEADER_ROW == cell.getRowIndex()) {
-						if (CellType.STRING.equals(cell.getCellType())) {
-							if (RESPONSIBLE.equals(cell.getStringCellValue())) {
-								columnResponsible = (byte) cell.getColumnIndex();
-							} else if (ORIGINAL_ESTIMATE.equals(cell.getStringCellValue())) {
-								columnOriginalEstimate = (byte) cell.getColumnIndex();
-							}
-						}
-						if (columnResponsible >= 0 && columnOriginalEstimate >= 0) {
-							break;
-						}
-					} else {
-						if (columnResponsible == cell.getColumnIndex()) {
-							empleadoStringName = cell.getStringCellValue();
-						} else if (columnOriginalEstimate == cell.getColumnIndex()) {
-							empleadoOriginalEstimate = Double.valueOf(cell.getNumericCellValue());
-						} else if (columnOriginalEstimate < cell.getColumnIndex()) {
-							continue;
-						} else {
-							continue;
-						}
-					}
-					if (!empleadoStringName.equals("") && columnOriginalEstimate == cell.getColumnIndex()) {
-						if (!isDuplicateKey()) {
-							addNewEmpleadoToHashMap();
-						} else if (isDuplicateKey()) {
-							addNewValueToKey();
-						}
-					}
-//					System.out.println("empleadoname: " + empleadoStringName + "\n" +
-//							"nuevo valor empleado: " + empleadoOriginalEstimate + "\n" +
-//							"celda: " + cell.getColumnIndex());
-				}
-			}
-
-			printHashMapValues();
-
+			rowIterator = sheet.iterator();
 			workbook.close();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -86,28 +88,68 @@ public class MainClass {
 		}
 	}
 
-	private static boolean isDuplicateKey() {
-		return empleadosHashMap.containsKey(empleadoStringName);
-	}
+	private void iterateHeaderRow(Iterator<Cell> cellIterator) {
 
-	private static void addNewEmpleadoToHashMap() {
-		empleadosHashMap.put(empleadoStringName, empleadoOriginalEstimate);
+		while (cellIterator.hasNext()) {
+			Cell cell = cellIterator.next();
+			if (columnResponsible >= 0 && columnOriginalEstimate >= 0) {
+				break;
+			}
+			if (CellType.STRING.equals(cell.getCellType())) {
+				if (RESPONSIBLE.equals(cell.getStringCellValue())) {
+					columnResponsible = (byte) cell.getColumnIndex();
+				} else if (ORIGINAL_ESTIMATE.equals(cell.getStringCellValue())) {
+					columnOriginalEstimate = (byte) cell.getColumnIndex();
+				} else {
+					continue;
+				}
+			}
+		}
 	}
-
-	private static void addNewValueToKey() {
-		empleadosHashMap.put(empleadoStringName, (empleadosHashMap.get(empleadoStringName) + empleadoOriginalEstimate));
+	
+	private void manageHashMapAddition(int cellCollumnIndex) {
+		if (!empleadoStringName.equals("") && (columnOriginalEstimate == cellCollumnIndex)) {
+			if (!empleadosHashMap.containsKey(empleadoStringName)) {
+				empleadosHashMap.put(empleadoStringName, empleadoOriginalEstimate);
+			} else {
+				empleadosHashMap.put(empleadoStringName, (empleadosHashMap.get(empleadoStringName) + empleadoOriginalEstimate));
+			}
+		}
 	}
-
-	private static void printHashMapValues() {
-		for (HashMap.Entry<String, Double> entry : empleadosHashMap.entrySet()) {
-//		    String key = entry.getKey();
-//		    Double value = entry.getValue();
-			System.out.println("Días estimados del empleado " + entry.getKey() + " = \n"
-					+ convertToDays(entry.getValue()) + " días. (" + entry.getValue().toString() + " horas).");
+	
+	private void iterateBodyRows(Iterator<Cell> cellIterator) {
+		while (cellIterator.hasNext()) {
+			Cell cell = cellIterator.next();
+			if (columnOriginalEstimate < cell.getColumnIndex()) {
+				break;//this break was a continue, maybe change it back if something weird happens.
+			} else if (columnResponsible == cell.getColumnIndex()) {
+				setEmpleadoStringName(cell.getStringCellValue());
+			} else if (columnOriginalEstimate == cell.getColumnIndex()) {
+				setEmpleadoOriginalEstimate(Double.valueOf(cell.getNumericCellValue()));
+			} else {
+				continue;
+			}
+			manageHashMapAddition(cell.getColumnIndex());
 		}
 	}
 
-	private static double convertToDays(double doubleValue) {
-		return (doubleValue / 3600 / 8);
+	private void iterateThroughRows() {
+		while (rowIterator.hasNext()) {
+			Row row = rowIterator.next();
+			Iterator<Cell> cellIterator = row.cellIterator();
+			if(HEADER_ROW == row.getRowNum()) {
+				iterateHeaderRow(cellIterator);
+			} else {
+				iterateBodyRows(cellIterator);
+			}
+
+		}
+	}
+
+	private void execute() {
+		fetchFile();
+		setIteratorRow();
+		iterateThroughRows();
+		printHashMapValues();
 	}
 }
