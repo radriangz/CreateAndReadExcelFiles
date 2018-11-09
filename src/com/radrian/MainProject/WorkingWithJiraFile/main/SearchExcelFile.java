@@ -14,7 +14,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-public class MainClass {
+public class SearchExcelFile {
 	private final String ORIGINAL_ESTIMATE = "Estimación original";
 	private final String RESPONSIBLE = "Responsable";
 	private final byte HEADER_ROW = 0;
@@ -26,11 +26,6 @@ public class MainClass {
 	private double empleadoOriginalEstimate = 0.0f;
 	private byte columnOriginalEstimate = -1;
 	private byte columnResponsible = -1;
-
-	public static void main(String[] args) {
-		MainClass mc = new MainClass();
-		mc.execute();
-	}
 
 	private void setEmpleadoStringName(String stringCellValue) {
 		this.empleadoStringName = stringCellValue;
@@ -151,5 +146,10 @@ public class MainClass {
 		setIteratorRow();
 		iterateThroughRows();
 		printHashMapValues();
+	}
+	
+	public static void main(String[] args) {
+		SearchExcelFile sef = new SearchExcelFile();
+		sef.execute();
 	}
 }
