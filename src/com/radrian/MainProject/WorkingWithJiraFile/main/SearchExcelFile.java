@@ -1,4 +1,4 @@
-package com.radrian.MainProject.WorkingWithJiraFile.main;
+package com.radrian.mainproject.workingwithjirafile.main;
 
 import java.io.File;
 import java.io.FileInputStream;
