@@ -14,6 +14,8 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import com.radrian.mainproject.workingwithjirafile.classes.Empleado;
+
 public class SearchExcelFile {
 	private final String ORIGINAL_ESTIMATE = "Estimación original";
 	private final String RESPONSIBLE = "Responsable";
@@ -21,7 +23,7 @@ public class SearchExcelFile {
 
 	private String fileRoute = "";
 	private Iterator<Row> rowIterator = null;
-	private HashMap<String, Double> empleadosHashMap = new HashMap<String, Double>();
+	private HashMap<String, Empleado> empleadosHashMap = new HashMap<String, Empleado>();
 	private String empleadoStringName = "";
 	private double empleadoOriginalEstimate = 0.0f;
 	private byte columnOriginalEstimate = -1;
@@ -35,18 +37,19 @@ public class SearchExcelFile {
 		this.empleadoOriginalEstimate = Double.valueOf(cellNumericCellValue);
 	}
 
-	private double convertToDays(double doublValueToDays) {
-		return (doublValueToDays / 3600 / 8);
-	}
-	
-	private double convertToHours(double dobleValueToHours) {
-		return (dobleValueToHours/3600);
-	}
-	
+//	private double convertToDays(double doublValueToDays) {
+//		return (doublValueToDays / 3600 / 8);
+//	}
+//
+//	private double convertToHours(double dobleValueToHours) {
+//		return (dobleValueToHours / 3600);
+//	}
+
 	private void printHashMapValues() {
-		for (HashMap.Entry<String, Double> entry : empleadosHashMap.entrySet()) {
-			System.out.println("Días estimados del empleado " + entry.getKey() + " = \n"
-					+ convertToDays(entry.getValue()) + " días. (" + convertToHours(entry.getValue()) + " horas).");
+		for (HashMap.Entry<String, Empleado> entry : empleadosHashMap.entrySet()) {
+//			System.out.println("Días estimados del empleado " + entry.getKey() + " = \n"
+//					+ convertToDays(entry.getValue()) + " días. (" + convertToHours(entry.getValue()) + " horas).");
+			entry.toString();
 		}
 	}
 
@@ -101,22 +104,31 @@ public class SearchExcelFile {
 			}
 		}
 	}
-	
+
 	private void manageHashMapAddition(int cellCollumnIndex) {
 		if (!empleadoStringName.equals("") && (columnOriginalEstimate == cellCollumnIndex)) {
 			if (!empleadosHashMap.containsKey(empleadoStringName)) {
-				empleadosHashMap.put(empleadoStringName, empleadoOriginalEstimate);
+//				empleadosHashMap.put(empleadoStringName, empleadoOriginalEstimate);
+				Empleado empleado = new Empleado(empleadoStringName, empleadoOriginalEstimate);
+				empleadosHashMap.put(empleadoStringName, empleado);
 			} else {
-				empleadosHashMap.put(empleadoStringName, (empleadosHashMap.get(empleadoStringName) + empleadoOriginalEstimate));
+//				empleadosHashMap.put(empleadoStringName, (empleadosHashMap.get(empleadoStringName) + empleadoOriginalEstimate));
+//				empleadosHashMap.put(empleadosHashMap.get(empleadoStringName).getName(), (empleadosHashMap.get(empleadoStringName).addToOriginalEstimate(empleadoOriginalEstimate)));
+//				empleadosHashMap.put(empleadosHashMap.get(empleadoStringName).getName(), new Empleado(empleadoStringName, (empleadosHashMap.get(empleadoStringName).addToOriginalEstimate(empleadoOriginalEstimate)));
+				empleadosHashMap.get(empleadoStringName).addToRemainingEstimate(empleadoOriginalEstimate);
+//				Empleado empleado = new Empleado(empleadosHashMap.get(empleadoStringName).getName(), 
+//						(empleadosHashMap.get(empleadoStringName).getOriginalEstimate() + empleadoOriginalEstimate));
+//				empleadosHashMap.put(empleadoStringName, empleado);
+				
 			}
 		}
 	}
-	
+
 	private void iterateBodyRows(Iterator<Cell> cellIterator) {
 		while (cellIterator.hasNext()) {
 			Cell cell = cellIterator.next();
 			if (columnOriginalEstimate < cell.getColumnIndex()) {
-				break;//this break was a continue, maybe change it back if something weird happens.
+				break;// this break was a continue, maybe change it back if something weird happens.
 			} else if (columnResponsible == cell.getColumnIndex()) {
 				setEmpleadoStringName(cell.getStringCellValue());
 			} else if (columnOriginalEstimate == cell.getColumnIndex()) {
@@ -132,7 +144,7 @@ public class SearchExcelFile {
 		while (rowIterator.hasNext()) {
 			Row row = rowIterator.next();
 			Iterator<Cell> cellIterator = row.cellIterator();
-			if(HEADER_ROW == row.getRowNum()) {
+			if (HEADER_ROW == row.getRowNum()) {
 				iterateHeaderRow(cellIterator);
 			} else {
 				iterateBodyRows(cellIterator);
@@ -147,7 +159,7 @@ public class SearchExcelFile {
 		iterateThroughRows();
 		printHashMapValues();
 	}
-	
+
 	public static void main(String[] args) {
 		SearchExcelFile sef = new SearchExcelFile();
 		sef.execute();

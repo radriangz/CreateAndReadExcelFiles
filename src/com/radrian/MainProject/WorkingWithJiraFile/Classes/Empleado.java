@@ -27,11 +27,11 @@ public class Empleado {
 		this.remainingEstimate = remainingEstimate;
 	}
 
-	public void addToOriginalEstimate(float value) {
-		this.originalEstimate += value;
+	public void addToOriginalEstimate(double empleadoOriginalEstimate) {
+		this.originalEstimate += empleadoOriginalEstimate;
 	}
 	
-	public void addToRemainingEstimate(float value) {
+	public void addToRemainingEstimate(double value) {
 		this.remainingEstimate += value;
 	}
 	
@@ -46,11 +46,11 @@ public class Empleado {
 		return remainingEstimate;
 	}
 
-	public float convertToHours(float secondsToHours) {
+	public double convertToHours(double secondsToHours) {
 		return (secondsToHours/3600);
 	}
 	
-	public float convertToLaboralDays(float secondsToDays) {
+	public double convertToLaboralDays(double secondsToDays) {
 		return (convertToHours(secondsToDays)/8);
 	}
 	
@@ -58,8 +58,12 @@ public class Empleado {
 	public String toString() {
 		// TODO Auto-generated method stub
 		return ("\nNombre de Empleado: " + name + 
-				"\nEstimación original: " + originalEstimate + 
-				"\nEstimación restante: " + remainingEstimate);
+				"\nEstimación original: " + originalEstimate + " segundos (" + 
+				Double.toString(convertToHours(originalEstimate)) + " horas, o " + 
+				Double.toString(convertToLaboralDays(originalEstimate)) + " días laborales." + 
+				"\nEstimación restante: " + remainingEstimate + " segundos (" + 
+				Double.toString(convertToHours(remainingEstimate)) + " horas, o " + 
+				Double.toString(convertToLaboralDays(remainingEstimate)) + " días laborales.");
 	}
 
 }
