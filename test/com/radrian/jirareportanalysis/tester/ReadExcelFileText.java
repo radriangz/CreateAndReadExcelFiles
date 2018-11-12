@@ -1,4 +1,4 @@
-package com.radrian.readandwriteexcelfiles.tester;
+package com.radrian.jirareportanalysis.tester;
 
 import java.io.File;
 import java.io.FileInputStream;
