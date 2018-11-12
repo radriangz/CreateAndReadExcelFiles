@@ -1,4 +1,4 @@
-package com.radrian.jirareportanalysis.test;
+package test.java.com.radrian.jirareportanalysis.test;
 
 import java.io.File;
 import java.io.FileNotFoundException;

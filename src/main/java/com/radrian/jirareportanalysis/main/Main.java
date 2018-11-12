@@ -1,10 +1,10 @@
-package com.radrian.jirareportanalysis.main;
+package main.java.com.radrian.jirareportanalysis.main;
 
 import java.io.File;
 
 import javax.swing.JFileChooser;
 
-import com.radrian.jirareportanalysis.model.JIRAReportAnalysis;
+import main.java.com.radrian.jirareportanalysis.model.JIRAReportAnalysis;
 
 /**
  * @author RAdrian

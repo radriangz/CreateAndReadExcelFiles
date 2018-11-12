@@ -1,4 +1,4 @@
-package com.radrian.jirareportanalysis.model;
+package main.java.com.radrian.jirareportanalysis.model;
 
 /**
  * <h1>Empleado</h1> Creates an Empleado type Object. Stores three parameters.

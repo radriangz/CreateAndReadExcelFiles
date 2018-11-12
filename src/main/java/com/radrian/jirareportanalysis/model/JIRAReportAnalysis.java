@@ -1,4 +1,4 @@
-package com.radrian.jirareportanalysis.model;
+package main.java.com.radrian.jirareportanalysis.model;
 
 import java.io.File;
 import java.io.FileInputStream;
