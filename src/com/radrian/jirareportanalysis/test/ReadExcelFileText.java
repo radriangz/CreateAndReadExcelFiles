@@ -1,4 +1,4 @@
-package com.radrian.jirareportanalysis.tester;
+package com.radrian.jirareportanalysis.test;
 
 import java.io.File;
 import java.io.FileInputStream;
