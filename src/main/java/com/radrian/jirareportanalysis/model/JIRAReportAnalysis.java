@@ -12,8 +12,9 @@ import javax.swing.JOptionPane;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 
 /**
  * <h1>JIRAReportAnalysis
@@ -34,7 +35,7 @@ public class JIRAReportAnalysis {
 	private final byte HEADER_ROW_INDEX = 0;
 
 	private String fileRoute;
-	private XSSFSheet sheet;
+	private Sheet sheet;
 	private HashMap<String, Responsible> empleadosHashMap = new HashMap<String, Responsible>();
 	private byte originalEstimateIndex = -1;
 	private byte responsibleIndex = -1;
@@ -49,7 +50,8 @@ public class JIRAReportAnalysis {
 	 */
 	private void assignSheet() {
 		try (FileInputStream file = new FileInputStream(new File(fileRoute))) {
-			XSSFWorkbook workbook = new XSSFWorkbook(file);
+			new WorkbookFactory();
+			Workbook workbook = WorkbookFactory.create(file);
 			sheet = workbook.getSheetAt(0);
 			workbook.close();
 		} catch (FileNotFoundException e) {
