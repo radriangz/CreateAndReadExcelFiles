@@ -11,6 +11,7 @@ import javax.swing.JOptionPane;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -40,6 +41,7 @@ public class JIRAReportAnalysis {
 	private byte originalEstimateIndex = -1;
 	private byte responsibleIndex = -1;
 	private byte remainingEstimateIndex = -1;
+	private boolean areColumnIndexesAssigned = false;
 
 	public JIRAReportAnalysis(String fileRoute) {
 		this.fileRoute = fileRoute;
@@ -69,11 +71,11 @@ public class JIRAReportAnalysis {
 
 		while (rowIterator.hasNext()) {
 			Row row = rowIterator.next();
-			if (HEADER_ROW_INDEX == row.getRowNum()) {
+			while (!areColumnIndexesAssigned) {
 				findColumIndexes(row);
-			} else {
-				processResponsibleDataFromRow(row);
+				break;
 			}
+			processResponsibleDataFromRow(row);
 		}
 	}
 
@@ -85,10 +87,11 @@ public class JIRAReportAnalysis {
 	 */
 	private void findColumIndexes(Row headerRow) {
 		Iterator<Cell> cellIterator = headerRow.cellIterator();
-
+		DataFormatter dataFormatter = new DataFormatter();
+		
 		while (cellIterator.hasNext()) {
 			Cell cell = cellIterator.next();
-
+			
 			if (CellType.STRING.equals(cell.getCellType())) {
 				if (RESPONSIBLE_COLUMN_TITLE.equals(cell.getStringCellValue())) {
 					responsibleIndex = (byte) cell.getColumnIndex();
@@ -100,6 +103,7 @@ public class JIRAReportAnalysis {
 			}
 
 			if (responsibleIndex >= 0 && originalEstimateIndex >= 0 && remainingEstimateIndex >= 0) {
+				areColumnIndexesAssigned = true;
 				break;
 			}
 		}
