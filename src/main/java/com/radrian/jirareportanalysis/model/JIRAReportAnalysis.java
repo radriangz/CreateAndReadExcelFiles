@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 import javax.swing.JOptionPane;
+
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
@@ -40,6 +41,7 @@ public class JIRAReportAnalysis {
 	private byte responsibleIndex = -1;
 	private byte remainingEstimateIndex = -1;
 	private boolean areColumnIndexesAssigned = false;
+	private boolean isAnalysisSuccessfull;
 
 	public JIRAReportAnalysis(String fileRoute) {
 		this.fileRoute = fileRoute;
@@ -143,27 +145,35 @@ public class JIRAReportAnalysis {
 	 * Display analysis results for the JIRA excel report file.
 	 */
 	public void displayAnalysissResult() {
-		StringBuilder outputText = new StringBuilder();
-		outputText.append(RESPONSIBLE_COLUMN_TITLE).append(" | ").append(ORIGINAL_ESTIMATE_COLUMN_TITLE).append(" | ")
-				.append(REMAINING_ESTIMATE_COLUMN_TITLE).append("\n");
+		if (this.isAnalysisSuccessfull) {
+			StringBuilder outputText = new StringBuilder();
+			outputText.append(RESPONSIBLE_COLUMN_TITLE).append(" | ").append(ORIGINAL_ESTIMATE_COLUMN_TITLE)
+					.append(" | ").append(REMAINING_ESTIMATE_COLUMN_TITLE).append("\n");
 
-		for (HashMap.Entry<String, Responsible> entry : empleadosHashMap.entrySet()) {
-			outputText.append(entry.getValue().getResponsibleInfo());
+			for (HashMap.Entry<String, Responsible> entry : empleadosHashMap.entrySet()) {
+				outputText.append(entry.getValue().getResponsibleInfo());
+			}
+			JOptionPane.showMessageDialog(null, outputText.toString(), "Resultados", JOptionPane.INFORMATION_MESSAGE);
+		} else {
+			JOptionPane.showMessageDialog(null, "El análisis no pud", "Error", JOptionPane.ERROR_MESSAGE);
 		}
-		JOptionPane.showMessageDialog(null, outputText.toString(), "Resultados", JOptionPane.INFORMATION_MESSAGE);
 	}
 
 	/**
 	 * Executes analysis for the JIRA report file.
 	 */
-	public void executeAnalysis() {
+	public boolean executeAnalysis() {
+		boolean executed = false;
+		assignSheet();
+
 		if (this.sheet != null) {
-			assignSheet();
 			iterateSheetRows();
+			executed = true;
+			this.isAnalysisSuccessfull = true;
 		} else {
 			JOptionPane.showMessageDialog(null, "No se pudo obtener la horja para leer los archivos", "Error",
 					JOptionPane.ERROR_MESSAGE);
 		}
-
+		return executed;
 	}
 }
