@@ -51,7 +51,7 @@ public class JIRAReportAnalysis {
 	private void assignSheet() {
 		try {
 			File initialFile = new File(fileRoute);
-		    InputStream inputStreamFile = new FileInputStream(initialFile);
+			InputStream inputStreamFile = new FileInputStream(initialFile);
 			Workbook workbook = WorkbookFactory.create(inputStreamFile);
 			sheet = workbook.getSheetAt(0);
 			workbook.close();
@@ -157,7 +157,13 @@ public class JIRAReportAnalysis {
 	 * Executes analysis for the JIRA report file.
 	 */
 	public void executeAnalysis() {
-		assignSheet();
-		iterateSheetRows();
+		if (this.sheet != null) {
+			assignSheet();
+			iterateSheetRows();
+		} else {
+			JOptionPane.showMessageDialog(null, "No se pudo obtener la horja para leer los archivos", "Error",
+					JOptionPane.ERROR_MESSAGE);
+		}
+
 	}
 }
