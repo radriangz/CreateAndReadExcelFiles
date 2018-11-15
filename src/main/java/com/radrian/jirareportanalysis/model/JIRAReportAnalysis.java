@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 import javax.swing.JOptionPane;
+
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
@@ -62,6 +63,19 @@ public class JIRAReportAnalysis {
 			JOptionPane.showMessageDialog(null, "Your InputStream was neither an OLE2 stream, nor an OOXML stream",
 					"Error", JOptionPane.ERROR_MESSAGE);
 			e.printStackTrace();
+			/*
+			 * TO DO Implementar un método que al obtener el error "Your InputStream was
+			 * neither an OLE2 stream, nor an OOXML stream" reciba el archivo en cuestión y
+			 * lo trate como un html, para poder generar un documento excel válido que
+			 * podamos analizar.
+			 * 
+			 * Docs. https://github.com/alanhay/html-exporter
+			 * https://shreyanshshah.wordpress.com/2013/11/30/convert-html-table-to-excel-
+			 * file-using-jsoup-and-apache-poi/
+			 * https://community.atlassian.com/t5/Answers-Developer-Questions/How-to-take-
+			 * out-certain-fields-from-excel-sheet-export-in-issue/qaq-p/573065
+			 * 
+			 */
 		}
 	}
 
@@ -112,19 +126,17 @@ public class JIRAReportAnalysis {
 	}
 
 	/**
-	 * Processes row's data for the responsible employee and summarizes the
-	 * original and remaining estimate.
+	 * Processes row's data for the responsible employee and summarizes the original
+	 * and remaining estimate.
 	 * 
 	 * @param bodyRow
 	 */
 	private void processResponsibleDataFromRow(Row bodyRow) {
-		// DataFormatter dataFormatter = new DataFormatter();
-
 		Cell responsibleCell = bodyRow.getCell(this.responsibleIndex);
 		Cell originalEstimateCell = bodyRow.getCell(this.originalEstimateIndex);
 		Cell remainingEstimateCell = bodyRow.getCell(remainingEstimateIndex);
 
-		if (responsibleCell != null && originalEstimateCell != null) {
+		if (responsibleCell != null && originalEstimateCell != null && !responsibleCell.toString().isEmpty()) {
 			String responsibleName = responsibleCell.getStringCellValue();
 			double originalEstimate = originalEstimateCell.getNumericCellValue();
 			double remainingEstimate = remainingEstimateCell == null ? 0.0
