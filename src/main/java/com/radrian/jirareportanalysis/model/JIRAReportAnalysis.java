@@ -4,14 +4,13 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Iterator;
 
 import javax.swing.JOptionPane;
-
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
-import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -33,7 +32,6 @@ public class JIRAReportAnalysis {
 	private final String ORIGINAL_ESTIMATE_COLUMN_TITLE = "Estimación original";
 	private final String REMAINING_ESTIMATE_COLUMN_TITLE = "Estimación Restante";
 	private final String RESPONSIBLE_COLUMN_TITLE = "Responsable";
-	private final byte HEADER_ROW_INDEX = 0;
 
 	private String fileRoute;
 	private Sheet sheet;
@@ -51,14 +49,17 @@ public class JIRAReportAnalysis {
 	 * Gets first sheet from selected file.
 	 */
 	private void assignSheet() {
-		try (FileInputStream file = new FileInputStream(new File(fileRoute))) {
-			new WorkbookFactory();
-			Workbook workbook = WorkbookFactory.create(file);
+		try {
+			File initialFile = new File(fileRoute);
+		    InputStream inputStreamFile = new FileInputStream(initialFile);
+			Workbook workbook = WorkbookFactory.create(inputStreamFile);
 			sheet = workbook.getSheetAt(0);
 			workbook.close();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
+			JOptionPane.showMessageDialog(null, "Your InputStream was neither an OLE2 stream, nor an OOXML stream",
+					"Error", JOptionPane.ERROR_MESSAGE);
 			e.printStackTrace();
 		}
 	}
@@ -71,9 +72,10 @@ public class JIRAReportAnalysis {
 
 		while (rowIterator.hasNext()) {
 			Row row = rowIterator.next();
-			while (!areColumnIndexesAssigned) {
+
+			if (!areColumnIndexesAssigned) {
 				findColumIndexes(row);
-				break;
+				continue;
 			}
 			processResponsibleDataFromRow(row);
 		}
@@ -87,11 +89,10 @@ public class JIRAReportAnalysis {
 	 */
 	private void findColumIndexes(Row headerRow) {
 		Iterator<Cell> cellIterator = headerRow.cellIterator();
-		DataFormatter dataFormatter = new DataFormatter();
-		
+
 		while (cellIterator.hasNext()) {
 			Cell cell = cellIterator.next();
-			
+
 			if (CellType.STRING.equals(cell.getCellType())) {
 				if (RESPONSIBLE_COLUMN_TITLE.equals(cell.getStringCellValue())) {
 					responsibleIndex = (byte) cell.getColumnIndex();
@@ -116,6 +117,8 @@ public class JIRAReportAnalysis {
 	 * @param bodyRow
 	 */
 	private void processResponsibleDataFromRow(Row bodyRow) {
+//		DataFormatter dataFormatter = new DataFormatter();
+
 		Cell responsibleCell = bodyRow.getCell(this.responsibleIndex);
 		Cell originalEstimateCell = bodyRow.getCell(this.originalEstimateIndex);
 		Cell remainingEstimateCell = bodyRow.getCell(remainingEstimateIndex);
