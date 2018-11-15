@@ -7,7 +7,7 @@
     <property name="dir.workspace" value="${dir.buildfile}/.."/>
     <property name="dir.jarfile" value="${dir.buildfile}/build"/>
     <target name="create_run_jar">
-        <jar destfile="${dir.jarfile}/JIRAReportAnalizer.jar">
+        <jar destfile="${dir.jarfile}/JIRAReportAnalyzer.jar">
             <manifest>
                 <attribute name="Main-Class" value="org.eclipse.jdt.internal.jarinjarloader.JarRsrcLoader"/>
                 <attribute name="Rsrc-Main-Class" value="com.radrian.jirareportanalysis.main.Main"/>
