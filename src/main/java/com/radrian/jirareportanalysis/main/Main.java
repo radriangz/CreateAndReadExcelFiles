@@ -24,17 +24,17 @@ public class Main {
 	}
 
 	/**
-	 * Executes this program.
-	 * 
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		Main main = new Main();
-		String fileRoute = main.fetchFile();
-		JIRAReportAnalysis analysis = new JIRAReportAnalysis(fileRoute);
-		analysis.executeAnalysis();
-		analysis.displayAnalysissResult();
-
-	}
+     * Executes this program.
+     *
+     * @param args
+     */
+    public static void main(String[] args) {
+        Main main = new Main();
+        String fileRoute = main.fetchFile();
+        JIRAReportAnalysis analysis = new JIRAReportAnalysis(fileRoute);
+        if (analysis.executeAnalysis()) {
+            analysis.displayAnalysissResult();
+        }
+    }
 
 }
