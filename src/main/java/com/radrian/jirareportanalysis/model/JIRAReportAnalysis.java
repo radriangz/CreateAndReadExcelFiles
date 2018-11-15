@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 import javax.swing.JOptionPane;
-
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
@@ -40,7 +39,7 @@ public class JIRAReportAnalysis {
 	private byte originalEstimateIndex = -1;
 	private byte responsibleIndex = -1;
 	private byte remainingEstimateIndex = -1;
-	private boolean areColumnIndexesAssigned = false;
+	private boolean areColumnIndexesAssigned;
 	private boolean isAnalysisSuccessfull;
 
 	public JIRAReportAnalysis(String fileRoute) {
@@ -113,13 +112,13 @@ public class JIRAReportAnalysis {
 	}
 
 	/**
-	 * Processes row's data for the responsible employee and summarizes the original
-	 * and remaining estimate.
+	 * Processes row's data for the responsible employee and summarizes the
+	 * original and remaining estimate.
 	 * 
 	 * @param bodyRow
 	 */
 	private void processResponsibleDataFromRow(Row bodyRow) {
-//		DataFormatter dataFormatter = new DataFormatter();
+		// DataFormatter dataFormatter = new DataFormatter();
 
 		Cell responsibleCell = bodyRow.getCell(this.responsibleIndex);
 		Cell originalEstimateCell = bodyRow.getCell(this.originalEstimateIndex);
@@ -161,9 +160,12 @@ public class JIRAReportAnalysis {
 
 	/**
 	 * Executes analysis for the JIRA report file.
+	 * 
+	 * @return
 	 */
 	public boolean executeAnalysis() {
 		boolean executed = false;
+
 		assignSheet();
 
 		if (this.sheet != null) {
@@ -171,9 +173,10 @@ public class JIRAReportAnalysis {
 			executed = true;
 			this.isAnalysisSuccessfull = true;
 		} else {
-			JOptionPane.showMessageDialog(null, "No se pudo obtener la horja para leer los archivos", "Error",
+			JOptionPane.showMessageDialog(null, "No se pudo obtener la hoja para leer los archivos", "Error",
 					JOptionPane.ERROR_MESSAGE);
 		}
+
 		return executed;
 	}
 }
