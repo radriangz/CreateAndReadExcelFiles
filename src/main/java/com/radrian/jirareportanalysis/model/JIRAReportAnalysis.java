@@ -124,7 +124,7 @@ public class JIRAReportAnalysis {
 			}
 		}
 	}
-
+	
 	/**
 	 * Processes row's data for the responsible employee and summarizes the original
 	 * and remaining estimate.
@@ -166,7 +166,7 @@ public class JIRAReportAnalysis {
 			}
 			JOptionPane.showMessageDialog(null, outputText.toString(), "Resultados", JOptionPane.INFORMATION_MESSAGE);
 		} else {
-			JOptionPane.showMessageDialog(null, "El análisis no pud", "Error", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null, "El análisis no pudo completarse", "Error", JOptionPane.ERROR_MESSAGE);
 		}
 	}
 

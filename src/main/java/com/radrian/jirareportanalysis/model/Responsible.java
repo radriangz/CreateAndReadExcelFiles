@@ -1,5 +1,7 @@
 package com.radrian.jirareportanalysis.model;
 
+import java.math.BigDecimal;
+
 /**
  * <h1>Empleado</h1> Creates an Empleado type Object. Stores three parameters.
  * Can convert the time parameters into hours and days. Can add new values to
@@ -66,9 +68,15 @@ public class Responsible {
 		return getRemainingEstimaInToHours() / LABORAL_DAY_HOURS;
 	}
 
+	private String roundToTwoDecimals (double doubleToRound) {
+		final byte DECIMALS_TO_ROUND = 2;
+		BigDecimal bigDecimal = new BigDecimal(Double.toString(doubleToRound));
+		return String.valueOf(bigDecimal.setScale(DECIMALS_TO_ROUND, BigDecimal.ROUND_DOWN));
+	}
+	
 	public String getResponsibleInfo() {
-		return (getName() + " | " + getOriginalEstimateInLaboralDays() + " días (" + getOriginalEstimateInHours()
-				+ " hr)" + " | " + getRemainingEstimateInLaboralDays() + " días (" + getRemainingEstimaInToHours()
+		return (getName() + " | " + roundToTwoDecimals(getOriginalEstimateInLaboralDays()) + " días (" + roundToTwoDecimals(getOriginalEstimateInHours())
+				+ " hr)" + " | " + roundToTwoDecimals(getRemainingEstimateInLaboralDays()) + " días (" + roundToTwoDecimals(getRemainingEstimaInToHours())
 				+ " hr)\n");
 	}
 
